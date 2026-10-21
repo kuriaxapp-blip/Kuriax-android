@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101020">
+<title>KURIAX — Diversão sem limites</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101020;color:white;font-family:Arial,sans-serif}
+header{padding:24px 18px;background:#19192e;text-align:center}
+h1{color:#ff4f9a;font-size:34px;margin:0}
+header p{color:#bbb}
+nav{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:15px}
+button{border:0;border-radius:20px;padding:11px 15px;background:#282842;color:white}
+button.active{background:#ff4f9a;color:#fff}
+main{padding:12px;max-width:700px;margin:auto}
+.card{background:#1b1b30;border-radius:16px;padding:18px;margin:12px 0}
+.card h2{font-size:19px}
+.card p{color:#ddd;line-height:1.5}
+.tag{color:#ff78b3;font-size:12px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.ad{border:1px dashed #666;padding:20px;text-align:center;color:#aaa;border-radius:12px}
+footer{text-align:center;color:#aaa;padding:25px}
+</style>
+</head>
+<body>
+<header>
+<h1>KURIAX</h1>
+<p>Humor, curiosidades e tendências do mundo!</p>
+</header>
+<nav>
+<button class="active" onclick="show('Todos',this)">Todos</button>
+<button onclick="show('Humor',this)">😂 Humor</button>
+<button onclick="show('Curiosidades',this)">🧠 Curiosidades</button>
+<button onclick="show('Tendências',this)">🔥 Tendências</button>
+<button onclick="show('Favoritos',this)">❤️ Favoritos</button>
+</nav>
+<main>
+<div class="ad">Espaço reservado para publicidade</div>
+<section id="feed"></section>
+</main>
+<footer>KURIAX © 2026 · Diversão para todos</footer>
+<script>
+const posts=[
+{cat:'Humor',title:'O poder de uma boa gargalhada 😂',text:'Um pouco de humor pode transformar um dia difícil num dia melhor. Partilha um sorriso com alguém hoje!'},
+{cat:'Curiosidades',title:'Sabias que os polvos têm três corações? 🐙',text:'Dois ajudam a levar sangue às brânquias e o terceiro distribui sangue pelo resto do corpo.'},
+{cat:'Tendências',title:'O que está a acontecer no mundo? 🌍',text:'Este espaço poderá apresentar novidades e tendências depois de ligarmos uma fonte de conteúdo atualizada.'},
+{cat:'Curiosidades',title:'O espaço é mesmo silencioso? 🚀',text:'No espaço quase não existe ar para transportar ondas sonoras como acontece na Terra.'}
+];
+let fav=JSON.parse(localStorage.getItem('kuriaxFav')||'[]');
+function show(cat,btn){
+document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
+let list=cat==='Todos'?posts:cat==='Favoritos'?posts.filter(p=>fav.includes(p.title)):posts.filter(p=>p.cat===cat);
+document.getElementById('feed').innerHTML=list.map(p=>`<article class="card"><span class="tag">${p.cat}</span><h2>${p.title}</h2><p>${p.text}</p><div class="actions"><button onclick="favorite('${p.title.replace(/'/g,"\\'")}')">${fav.includes(p.title)?'❤️ Guardado':'🤍 Favoritar'}</button><button onclick="share('${p.title.replace(/'/g,"\\'")}')">📤 Partilhar</button></div></article>`).join('')||'<p>Ainda não há publicações favoritas.</p>';
+}
+function favorite(title){fav=fav.includes(title)?fav.filter(x=>x!==title):[...fav,title];localStorage.setItem('kuriaxFav',JSON.stringify(fav));show('Todos',document.querySelector('nav button'))}
+function share(title){if(navigator.share)navigator.share({title:'KURIAX',text:title});else alert(title)}
+show('Todos',document.querySelector('nav button'));
+</script>
+</body>
+</html>
